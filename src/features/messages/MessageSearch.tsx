@@ -3,7 +3,6 @@ import { useState } from 'react';
 import { Fade } from '../../components/animations/Fade';
 import { Card } from '../../components/layout/Card';
 import { SearchBar } from '../../components/search/SearchBar';
-import { SearchFilterBar } from '../../components/search/SearchFilterBar';
 import {
   SearchEmptyError,
   SearchFetching,
@@ -55,18 +54,18 @@ export function MessageSearch() {
     sanitizedInput,
     startTimeFilter,
     endTimeFilter,
-    pause: !hasRun || isMessagesFound,
+    pause: false,
   });
 
   // Coalesce GraphQL + PI results
-  const isAnyFetching = isFetching || isPiFetching;
-  const isAnyError = isError || isPiError;
-  const hasAllRun = hasRun && hasPiRun;
-  const isAnyMessageFound = isMessagesFound || isPiMessagesFound;
-  const messageListResult = isMessagesFound ? messageList : piMessageList;
+  const isAnyFetching =  isPiFetching;
+  const isAnyError =  isPiError;
+  const hasAllRun =  hasPiRun;
+  const isAnyMessageFound =  isPiMessagesFound;
+  const messageListResult =  piMessageList;
 
   // Keep url in sync
-  useSyncQueryParam(QUERY_SEARCH_PARAM, isValidInput ? sanitizedInput : '');
+  useSyncQueryParam(QUERY_SEARCH_PARAM, '');
 
   return (
     <>
@@ -81,16 +80,6 @@ export function MessageSearch() {
           <h2 className="w-min sm:w-fit pl-0.5 text-blue-500 font-medium">
             {!hasInput ? 'Latest Messages' : 'Search Results'}
           </h2>
-          <SearchFilterBar
-            originChain={originChainFilter}
-            onChangeOrigin={setOriginChainFilter}
-            destinationChain={destinationChainFilter}
-            onChangeDestination={setDestinationChainFilter}
-            startTimestamp={startTimeFilter}
-            onChangeStartTimestamp={setStartTimeFilter}
-            endTimestamp={endTimeFilter}
-            onChangeEndTimestamp={setEndTimeFilter}
-          />
         </div>
         <Fade show={!isAnyError && isValidInput && isAnyMessageFound}>
           <MessageTable messageList={messageListResult} isFetching={isAnyFetching} />
@@ -105,7 +94,7 @@ export function MessageSearch() {
           allowAddress={true}
         />
         <SearchUnknownError show={isAnyError && isValidInput} />
-        <SearchInvalidError show={!isValidInput} allowAddress={true} />
+        <SearchInvalidError show={false} allowAddress={true} />
       </Card>
     </>
   );

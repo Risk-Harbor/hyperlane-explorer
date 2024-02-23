@@ -6,7 +6,7 @@ import { shortenAddress } from '@hyperlane-xyz/utils';
 
 import { ChainLogo } from '../../components/icons/ChainLogo';
 import { MessageStatus, MessageStub } from '../../types';
-import { getHumanReadableDuration, getHumanReadableTimeString } from '../../utils/time';
+import { getHumanReadableTimeString } from '../../utils/time';
 import { getChainDisplayName } from '../chains/utils';
 import { useMultiProvider } from '../providers/multiProvider';
 
@@ -30,8 +30,6 @@ export function MessageTable({
           <th className={`${styles.header} hidden sm:table-cell`}>Sender</th>
           <th className={`${styles.header} hidden sm:table-cell`}>Recipient</th>
           <th className={styles.header}>Time sent</th>
-          <th className={`${styles.header} hidden lg:table-cell`}>Duration</th>
-          <th className={styles.header}>Status</th>
         </tr>
       </thead>
       <tbody>
@@ -95,23 +93,6 @@ export function MessageSummaryRow({ message, mp }: { message: MessageStub; mp: M
       </LinkCell>
       <LinkCell id={msgId} base64={base64} aClasses={styles.valueTruncated}>
         {getHumanReadableTimeString(origin.timestamp)}
-      </LinkCell>
-      <LinkCell
-        id={msgId}
-        base64={base64}
-        tdClasses="hidden lg:table-cell text-center px-4"
-        aClasses={styles.valueTruncated}
-      >
-        {destination?.timestamp
-          ? getHumanReadableDuration(destination.timestamp - origin.timestamp, 3)
-          : '-'}
-      </LinkCell>
-      <LinkCell id={msgId} base64={base64} aClasses="flex items-center justify-center">
-        <div
-          className={`text-center w-20 md:w-[5.25rem] py-1.5 text-sm rounded-full ${statusColor}`}
-        >
-          {statusText}
-        </div>
       </LinkCell>
     </>
   );

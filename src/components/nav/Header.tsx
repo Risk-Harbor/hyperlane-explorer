@@ -59,9 +59,6 @@ export function Header({ pathName }: { pathName: string }) {
           <Link href="/" className={navLinkClass('/')}>
             Home
           </Link>
-          <Link href="/settings" className={navLinkClass('/settings')}>
-            Settings
-          </Link>
           <Link href="/api-docs" className={navLinkClass('/api-docs')}>
             API
           </Link>
