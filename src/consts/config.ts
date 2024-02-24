@@ -33,9 +33,9 @@ export const chains : ChainMap<ChainConfig> = {
     },
     blockExplorers : [{
       url: "https://explorer.karak.network/",
-      family: ExplorerFamily.Etherscan,
-      name: "Etherscan",
-      apiUrl: "https://explorer.karak.network/api/v2"
+      family: ExplorerFamily.Blockscout,
+      apiUrl: "https://explorer.karak.network/api/v2",
+      name: "Etherscan"
     }],
     rpcUrls : [{
       http: "https://rpc.karak.network"
