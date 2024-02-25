@@ -62,7 +62,7 @@ export const chains : ChainMap<ChainConfig> = {
       }
   ],
     rpcUrls : [{
-      http: "https://optimism-mainnet.chainnodes.org/06303a6d-3082-45b9-951d-255b295ccfbf",
+      http: "https://optimism-mainnet.chainnodes.org/e373c56a-a6e1-4ad8-848b-8a8d6bdc2fc7",
       pagination : {
         maxBlockRange : 20000
       }
@@ -89,7 +89,7 @@ export const chains : ChainMap<ChainConfig> = {
       }
   ],
     rpcUrls : [{
-      http: "https://arbitrum-one.chainnodes.org/71050b8f-4162-4637-b9b6-814a7e97936a",
+      http: "https://arbitrum-one.chainnodes.org/e373c56a-a6e1-4ad8-848b-8a8d6bdc2fc7",
       pagination : {
         maxBlockRange: 20000
       }
