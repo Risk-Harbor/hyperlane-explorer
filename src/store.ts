@@ -3,6 +3,8 @@ import { persist } from 'zustand/middleware';
 
 import { ChainMap, MultiProvider } from '@hyperlane-xyz/sdk';
 
+import { objMerge } from '@hyperlane-xyz/utils';
+import { chains } from './consts/config';
 import { ChainConfig } from './features/chains/chainConfig';
 import { buildSmartProvider } from './features/providers/SmartMultiProvider';
 import { logger } from './utils/logger';
@@ -24,11 +26,12 @@ interface AppState {
 export const useStore = create<AppState>()(
   persist(
     (set) => ({
-      chainConfigs: {},
+      chainConfigs: chains,
       setChainConfigs: (configs: ChainMap<ChainConfig>) => {
-        set({ chainConfigs: configs, multiProvider: buildSmartProvider(configs) });
+        const mergedObj = objMerge(configs, chains) as ChainMap<ChainConfig>;
+        set({ chainConfigs: mergedObj, multiProvider: buildSmartProvider(configs) });
       },
-      multiProvider: buildSmartProvider({}),
+      multiProvider: buildSmartProvider(chains),
       setMultiProvider: (mp: MultiProvider) => {
         set({ multiProvider: mp });
       },

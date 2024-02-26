@@ -23,7 +23,6 @@ import { DestinationTransactionCard, OriginTransactionCard } from './cards/Trans
 import { useIsIcaMessage } from './ica';
 import { usePiChainMessageQuery } from './pi-queries/usePiChainMessageQuery';
 import { PLACEHOLDER_MESSAGE } from './placeholderMessages';
-import { useMessageQuery } from './queries/useMessageQuery';
 
 interface Props {
   messageId: string; // Hex value for message id
@@ -37,15 +36,6 @@ export function MessageDetails({ messageId, message: messageFromUrlParams }: Pro
   // Hook finds a delivery record on it's own
   const [deliveryFound, setDeliveryFound] = useState(false);
 
-  // GraphQL query and results
-  const {
-    isFetching: isGraphQlFetching,
-    isError: isGraphQlError,
-    hasRun: hasGraphQlRun,
-    isMessageFound: isGraphQlMessageFound,
-    message: messageFromGraphQl,
-  } = useMessageQuery({ messageId, pause: !!messageFromUrlParams || deliveryFound });
-
   // Run permissionless interop chains query if needed
   const {
     isError: isPiError,
@@ -54,15 +44,15 @@ export function MessageDetails({ messageId, message: messageFromUrlParams }: Pro
     isMessageFound: isPiMessageFound,
   } = usePiChainMessageQuery({
     messageId,
-    pause: !!messageFromUrlParams || !hasGraphQlRun || isGraphQlMessageFound,
+    pause: !!messageFromUrlParams,
   });
 
   // Coalesce GraphQL + PI results
   const _message =
-    messageFromUrlParams || messageFromGraphQl || messageFromPi || PLACEHOLDER_MESSAGE;
-  const isMessageFound = !!messageFromUrlParams || isGraphQlMessageFound || isPiMessageFound;
-  const isFetching = isGraphQlFetching || isPiFetching;
-  const isError = isGraphQlError || isPiError;
+    messageFromUrlParams || messageFromPi || PLACEHOLDER_MESSAGE;
+  const isMessageFound = !!messageFromUrlParams || isPiMessageFound;
+  const isFetching = isPiFetching;
+  const isError = isPiError;
   const blur = !isMessageFound;
   const isIcaMsg = useIsIcaMessage(_message);
 

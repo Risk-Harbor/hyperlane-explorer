@@ -44,12 +44,14 @@ export function usePiChainMessageSearchQuery({
       // TODO convert timestamps to from/to blocks here
       const query = { input: ensure0x(sanitizedInput) };
       try {
-        const messages = await Promise.any(
-          Object.values(chainConfigs).map((c) => fetchMessagesOrThrow(c, query, multiProvider)),
+        const messagePromises = await Promise.all(
+          Object.values(chainConfigs).map((c) => fetchMessagesOrThrow(c, query, multiProvider))
         );
-        return messages;
+        //Filter rejected promises.
+        const filterdMsgs = (messagePromises.filter(value => (value.length !== 0))).flat();
+        return filterdMsgs;
       } catch (e) {
-        logger.debug('Error fetching PI messages for:', sanitizedInput, e);
+        logger.error('Error fetching PI messages for:', sanitizedInput, e);
         return [];
       }
     },

@@ -99,8 +99,8 @@ export class HyperlaneJsonRpcProvider
             filter: {
               address,
               topics,
-              fromBlock: BigNumber.from(blockChunk[0]).toHexString(),
-              toBlock: BigNumber.from(blockChunk[1]).toHexString(),
+              fromBlock: "0x" + blockChunk[0].toString(16),
+              toBlock: "0x" + blockChunk[1].toString(16),
             },
           }) as Promise<Array<providers.Log>>,
       );
