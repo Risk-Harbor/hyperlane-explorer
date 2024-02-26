@@ -5,7 +5,7 @@ import { MultiProvider } from '@hyperlane-xyz/sdk';
 import { shortenAddress } from '@hyperlane-xyz/utils';
 
 import { ChainLogo } from '../../components/icons/ChainLogo';
-import { MessageStatus, MessageStub } from '../../types';
+import { MessageStub } from '../../types';
 import { getHumanReadableTimeString } from '../../utils/time';
 import { getChainDisplayName } from '../chains/utils';
 import { useMultiProvider } from '../providers/multiProvider';
@@ -51,27 +51,15 @@ export function MessageTable({
 export function MessageSummaryRow({ message, mp }: { message: MessageStub; mp: MultiProvider }) {
   const {
     msgId,
-    status,
     sender,
     recipient,
     originChainId,
     destinationChainId,
     origin,
-    destination,
+    //destination,
   } = message;
 
-  let statusColor = 'bg-blue-50 text-gray-700';
-  let statusText = 'Pending';
-  if (status === MessageStatus.Delivered) {
-    statusColor = 'bg-[#14825d] text-white';
-    statusText = 'Delivered';
-  } else if (status === MessageStatus.Failing) {
-    statusColor = 'bg-red-500 text-white';
-    statusText = 'Failing';
-  } else if (status === MessageStatus.Unknown) {
-    statusColor = 'bg-gray-400 text-white';
-    statusText = 'Unknown';
-  }
+
 
   const base64 = message.isPiMsg ? serializeMessage(message) : undefined;
 

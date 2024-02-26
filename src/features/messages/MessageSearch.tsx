@@ -28,13 +28,13 @@ export function MessageSearch() {
   const sanitizedInput = sanitizeString(debouncedSearchInput);
 
   // Filter state
-  const [originChainFilter, setOriginChainFilter] = useState<string | null>(null);
-  const [destinationChainFilter, setDestinationChainFilter] = useState<string | null>(null);
-  const [startTimeFilter, setStartTimeFilter] = useState<number | null>(null);
-  const [endTimeFilter, setEndTimeFilter] = useState<number | null>(null);
+  const [originChainFilter] = useState<string | null>(null);
+  const [destinationChainFilter] = useState<string | null>(null);
+  const [startTimeFilter] = useState<number | null>(null);
+  const [endTimeFilter] = useState<number | null>(null);
 
   // GraphQL query and results
-  const { isValidInput, isError, isFetching, hasRun, messageList, isMessagesFound } =
+  const { isValidInput } =
     useMessageSearchQuery(
       sanitizedInput,
       originChainFilter,

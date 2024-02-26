@@ -34,7 +34,7 @@ export function MessageDetails({ messageId, message: messageFromUrlParams }: Pro
 
   // Needed to force pause of message query if the useMessageDeliveryStatus
   // Hook finds a delivery record on it's own
-  const [deliveryFound, setDeliveryFound] = useState(false);
+  const [,setDeliveryFound] = useState(false);
 
   // Run permissionless interop chains query if needed
   const {
@@ -48,8 +48,7 @@ export function MessageDetails({ messageId, message: messageFromUrlParams }: Pro
   });
 
   // Coalesce GraphQL + PI results
-  const _message =
-    messageFromUrlParams || messageFromPi || PLACEHOLDER_MESSAGE;
+  const _message = messageFromUrlParams || messageFromPi || PLACEHOLDER_MESSAGE;
   const isMessageFound = !!messageFromUrlParams || isPiMessageFound;
   const isFetching = isPiFetching;
   const isError = isPiError;
