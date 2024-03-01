@@ -82,12 +82,12 @@ export function usePiChainMessageQuery({
   const { isLoading, isError, data } = useQuery(
     ['usePiChainMessageQuery', chainConfigs, messageId, pause, messageData],
     async () => {
-      if (pause || !messageId || !Object.keys(chainConfigs).length || messageData == undefined) return [];
+      if (pause || !messageId || !Object.keys(chainConfigs).length || messageData === undefined) return [];
       logger.info('Starting PI Chain message query for:', messageId);
       const originProvider = multiProvider.getProvider(messageData.originChainId);
       const destinationProvider = multiProvider.getProvider(messageData.destinationChainId);
-      const timestamp = (await originProvider?.getBlock(messageData.origin.blockNumber)).timestamp;
-      const query = { input: ensure0x(messageId),  fromBlock : (await fetchBlockNumberByTimestamp(destinationProvider, timestamp, messageData.destinationChainId))};
+      const timestamp = (await originProvider.getBlock(messageData.origin.blockNumber)).timestamp;
+      const query = { input: ensure0x(messageId),  fromBlock : (await fetchBlockNumberByTimestamp(destinationProvider, timestamp, Number(messageData.destinationChainId)))};
       try {
         const messagePromises = await Promise.all(
           Object.values(chainConfigs).map((c) => fetchMessagesOrThrow(c, query, multiProvider))

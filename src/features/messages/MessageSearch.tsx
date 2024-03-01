@@ -27,8 +27,6 @@ export function MessageSearch() {
   const sanitizedInput = sanitizeString(debouncedSearchInput);
 
   // Filter state
-  const [originChainFilter] = useState<string | null>(null);
-  const [destinationChainFilter] = useState<string | null>(null);
   const [startTimeFilter] = useState<number | null>(null);
   const [endTimeFilter] = useState<number | null>(null);
 
