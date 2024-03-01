@@ -10,6 +10,7 @@ import { useChainConfigs } from '../../chains/useChainConfigs';
 import { useMultiProvider } from '../../providers/multiProvider';
 import { isValidSearchQuery } from '../queries/useMessageQuery';
 
+import { fetchBlockNumberByTimestamp } from '../../../utils/blockCalculator';
 import { PiMessageQuery, PiQueryType, fetchMessagesFromPiChain } from './fetchPiChainMessages';
 
 // Query 'Permissionless Interoperability (PI)' chains using custom
@@ -70,33 +71,38 @@ export function usePiChainMessageSearchQuery({
 export function usePiChainMessageQuery({
   messageId,
   pause,
+  messageData
 }: {
   messageId: string;
   pause: boolean;
+  messageData: Message | undefined
 }) {
   const chainConfigs = useChainConfigs();
   const multiProvider = useMultiProvider();
   const { isLoading, isError, data } = useQuery(
-    ['usePiChainMessageQuery', chainConfigs, messageId, pause],
+    ['usePiChainMessageQuery', chainConfigs, messageId, pause, messageData],
     async () => {
-      if (pause || !messageId || !Object.keys(chainConfigs).length) return [];
-      logger.debug('Starting PI Chain message query for:', messageId);
-      const query = { input: ensure0x(messageId) };
+      if (pause || !messageId || !Object.keys(chainConfigs).length || messageData === undefined) return [];
+      logger.info('Starting PI Chain message query for:', messageId);
+      const originProvider = multiProvider.getProvider(messageData.originChainId);
+      const destinationProvider = multiProvider.getProvider(messageData.destinationChainId);
+      const timestamp = (await originProvider.getBlock(messageData.origin.blockNumber)).timestamp;
+      const query = { input: ensure0x(messageId),  fromBlock : (await fetchBlockNumberByTimestamp(destinationProvider, timestamp, Number(messageData.destinationChainId)))};
       try {
-        const messages = await Promise.any(
-          Object.values(chainConfigs).map((c) =>
-            fetchMessagesOrThrow(c, query, multiProvider, PiQueryType.MsgId),
-          ),
+        const messagePromises = await Promise.all(
+          Object.values(chainConfigs).map((c) => fetchMessagesOrThrow(c, query, multiProvider))
         );
-        return messages;
+        //Filter rejected promises.
+        const filterdMsgs = (messagePromises.filter(value => (value.length !== 0))).flat();
+        return filterdMsgs;
       } catch (e) {
-        logger.debug('Error fetching PI messages for:', messageId, e);
+        logger.error('Error fetching PI messages for:', e);
         return [];
       }
     },
     { retry: false },
-  );
-
+    );
+    
   const message = data?.length ? data[0] : null;
   const isMessageFound = !!message;
 
@@ -116,7 +122,5 @@ async function fetchMessagesOrThrow(
   queryType?: PiQueryType,
 ): Promise<Message[]> {
   const messages = await fetchMessagesFromPiChain(chainConfig, query, multiProvider, queryType);
-  // Throw so Promise.any caller doesn't trigger
-  if (!messages.length) throw new Error(`No messages found for chain ${chainConfig.chainId}`);
   return messages;
 }

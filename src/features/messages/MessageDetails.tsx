@@ -44,7 +44,8 @@ export function MessageDetails({ messageId, message: messageFromUrlParams }: Pro
     isMessageFound: isPiMessageFound,
   } = usePiChainMessageQuery({
     messageId,
-    pause: !!messageFromUrlParams,
+    pause: !messageFromUrlParams,
+    messageData : messageFromUrlParams
   });
 
   // Coalesce GraphQL + PI results
