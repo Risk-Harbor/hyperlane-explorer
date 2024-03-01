@@ -15,7 +15,6 @@ import { sanitizeString } from '../../utils/string';
 
 import { MessageTable } from './MessageTable';
 import { usePiChainMessageSearchQuery } from './pi-queries/usePiChainMessageQuery';
-import { useMessageSearchQuery } from './queries/useMessageQuery';
 
 const QUERY_SEARCH_PARAM = 'search';
 
@@ -32,16 +31,6 @@ export function MessageSearch() {
   const [destinationChainFilter] = useState<string | null>(null);
   const [startTimeFilter] = useState<number | null>(null);
   const [endTimeFilter] = useState<number | null>(null);
-
-  // GraphQL query and results
-  const { isValidInput } =
-    useMessageSearchQuery(
-      sanitizedInput,
-      originChainFilter,
-      destinationChainFilter,
-      startTimeFilter,
-      endTimeFilter,
-    );
 
   // Run permissionless interop chains query if needed
   const {
@@ -73,7 +62,7 @@ export function MessageSearch() {
         value={searchInput}
         onChangeValue={setSearchInput}
         isFetching={isAnyFetching}
-        placeholder="Search by address, hash, or message id"
+        placeholder="Search by origin tx hash"
       />
       <Card className="relative w-full min-h-[38rem] mt-4" padding="">
         <div className="px-2 pt-3.5 pb-3 sm:px-4 md:px-5 flex items-center justify-between">
@@ -81,19 +70,19 @@ export function MessageSearch() {
             {!hasInput ? 'Latest Messages' : 'Search Results'}
           </h2>
         </div>
-        <Fade show={!isAnyError && isValidInput && isAnyMessageFound}>
+        <Fade show={!isAnyError && isAnyMessageFound}>
           <MessageTable messageList={messageListResult} isFetching={isAnyFetching} />
         </Fade>
         <SearchFetching
-          show={!isAnyError && isValidInput && !isAnyMessageFound && !hasAllRun}
+          show={!isAnyError && !isAnyMessageFound && !hasAllRun}
           isPiFetching={isPiFetching}
         />
         <SearchEmptyError
-          show={!isAnyError && isValidInput && !isAnyMessageFound && hasAllRun}
+          show={!isAnyError && !isAnyMessageFound && hasAllRun}
           hasInput={hasInput}
           allowAddress={true}
         />
-        <SearchUnknownError show={isAnyError && isValidInput} />
+        <SearchUnknownError show={isAnyError} />
         <SearchInvalidError show={false} allowAddress={true} />
       </Card>
     </>

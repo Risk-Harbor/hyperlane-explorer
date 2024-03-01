@@ -64,14 +64,14 @@ export class HyperlaneJsonRpcProvider
       logger.warn(`Start block ${startBlock} greater than end block. Using ${endBlock} instead`);
       startBlock = endBlock;
     }
-    const minForBlockRange = maxBlockRange
-      ? endBlock - maxBlockRange * NUM_LOG_BLOCK_RANGES_TO_QUERY + 1
+    const maxForBlockRange = maxBlockRange
+      ? startBlock + maxBlockRange * NUM_LOG_BLOCK_RANGES_TO_QUERY + 1
       : 0;
-    if (startBlock < minForBlockRange) {
+    if (endBlock > maxForBlockRange) {
       logger.warn(
-        `Start block ${startBlock} requires too many queries, using ${minForBlockRange}.`,
+        `End block ${endBlock} requires too many queries, using ${maxForBlockRange}.`,
       );
-      startBlock = minForBlockRange;
+      endBlock = maxForBlockRange;
     }
     const minForBlockAge = maxBlockAge ? currentBlockNumber - maxBlockAge : 0;
     if (startBlock < minForBlockAge) {
